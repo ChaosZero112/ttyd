@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM phusion/baseimage:0.11
 LABEL maintainer "Shuanglei Tao - tsl0922@gmail.com"
 
 RUN apt-get update \
@@ -8,11 +8,11 @@ RUN apt-get update \
       curl \
       g++ \
       git \
-      libjson-c2 \
+      libjson-c3 \
       libjson-c-dev \
       libssl1.0.0 \
       libssl-dev \
-      libwebsockets7 \
+      libwebsockets8 \
       libwebsockets-dev \
       pkg-config \
       vim-common \
@@ -20,7 +20,7 @@ RUN apt-get update \
       tcptraceroute \
       inetutils-telnet \
       zsh \
-    && curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh \
+    && sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
     && git clone --depth=1 https://github.com/tsl0922/ttyd.git /tmp/ttyd \
     && cd /tmp/ttyd && mkdir build && cd build \
     && cmake -DCMAKE_BUILD_TYPE=RELEASE .. \
