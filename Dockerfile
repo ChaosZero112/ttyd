@@ -20,7 +20,7 @@ RUN apt-get update \
       tcptraceroute \
       inetutils-telnet \
       zsh \
-    && sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
+    #&& sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
     && git clone --depth=1 https://github.com/tsl0922/ttyd.git /tmp/ttyd \
     && cd /tmp/ttyd && mkdir build && cd build \
     && cmake -DCMAKE_BUILD_TYPE=RELEASE .. \
