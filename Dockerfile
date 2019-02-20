@@ -20,7 +20,10 @@ RUN apt-get update \
       tcptraceroute \
       inetutils-telnet \
       zsh \
-    && curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh \
+      dnsutils \
+      lolcat \
+      iftop \
+    && curl -fsSL https://raw.githubusercontent.com/loket/oh-my-zsh/feature/batch-mode/tools/install.sh \
     && git clone --depth=1 https://github.com/tsl0922/ttyd.git /tmp/ttyd \
     && cd /tmp/ttyd && mkdir build && cd build \
     && cmake -DCMAKE_BUILD_TYPE=RELEASE .. \
@@ -40,6 +43,6 @@ RUN apt-get update \
 
 EXPOSE 7681
 
-ENTRYPOINT ["ttyd"]
+ENTRYPOINT ["ttyd -R"]
 
-CMD ["bash"]
+CMD ["zsh"]
