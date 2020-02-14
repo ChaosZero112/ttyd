@@ -1,6 +1,9 @@
 FROM tsl0922/musl-cross
 LABEL maintainer "Shuanglei Tao - tsl0922@gmail.com"
 
+FROM ubuntu:18.04
+COPY --from=0 /ttyd/build/ttyd /usr/bin/ttyd
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
       ca-certificates \
