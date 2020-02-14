@@ -22,6 +22,7 @@ RUN apt-get update \
       lolcat \
       iftop \
       mosh \
+    && /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/loket/oh-my-zsh/feature/batch-mode/tools/install.sh)" -s --batch \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
