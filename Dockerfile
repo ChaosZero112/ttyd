@@ -11,17 +11,8 @@ COPY --from=0 /ttyd/build/ttyd /usr/bin/ttyd
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
       ca-certificates \
-      cmake \
       curl \
-      g++ \
       git \
-      libjson-c2 \
-      libjson-c-dev \
-      libssl1.0.0 \
-      libssl-dev \
-      libwebsockets7 \
-      libwebsockets-dev \
-      pkg-config \
       vim-common \
       iputils-ping \
       tcptraceroute \
@@ -31,15 +22,6 @@ RUN apt-get update \
       lolcat \
       iftop \
       mosh \
-    && /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/loket/oh-my-zsh/feature/batch-mode/tools/install.sh)" -s --batch \
-    && apt-get remove -y --purge \
-        cmake \
-        g++ \
-        libwebsockets-dev \
-        libjson-c-dev \
-        libssl-dev \
-        pkg-config \
-    && apt-get purge -y \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
