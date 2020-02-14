@@ -1,6 +1,10 @@
 FROM tsl0922/musl-cross
 LABEL maintainer "Shuanglei Tao - tsl0922@gmail.com"
 
+RUN git clone --depth=1 https://github.com/tsl0922/ttyd.git /ttyd \
+    && cd /ttyd \
+    && ./scripts/cross-build.sh x86_64
+
 FROM ubuntu:18.04
 COPY --from=0 /ttyd/build/ttyd /usr/bin/ttyd
 
@@ -28,8 +32,6 @@ RUN apt-get update \
       iftop \
       mosh \
     && /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/loket/oh-my-zsh/feature/batch-mode/tools/install.sh)" -s --batch \
-    && git clone --depth=1 https://github.com/tsl0922/ttyd.git /ttyd \
-    && cd /ttyd && ./scripts/cross-build.sh x86_64 \
     && apt-get remove -y --purge \
         cmake \
         g++ \
