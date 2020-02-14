@@ -49,6 +49,6 @@ RUN chmod +x /sbin/tini
 
 EXPOSE 7681
 
-ENTRYPOINT ["/tini", "--"]
+ENTRYPOINT ["/sbin/tini", "--"]
 
 CMD ["ttyd","zsh"]
