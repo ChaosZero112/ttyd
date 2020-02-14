@@ -41,8 +41,7 @@ RUN apt-get update \
         pkg-config \
     && apt-get purge -y \
     && apt-get autoremove -y \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /tmp/ttyd
+    && rm -rf /var/lib/apt/lists/*
 
 ENV TINI_VERSION v0.18.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /sbin/tini
