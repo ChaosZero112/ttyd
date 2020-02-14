@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM tsl0922/musl-cross
 LABEL maintainer "Shuanglei Tao - tsl0922@gmail.com"
 
 RUN apt-get update \
@@ -23,12 +23,10 @@ RUN apt-get update \
       dnsutils \
       lolcat \
       iftop \
+      mosh \
     && /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/loket/oh-my-zsh/feature/batch-mode/tools/install.sh)" -s --batch \
-    && git clone --depth=1 https://github.com/tsl0922/ttyd.git /tmp/ttyd \
-    && cd /tmp/ttyd && mkdir build && cd build \
-    && cmake -DCMAKE_BUILD_TYPE=RELEASE .. \
-    && make \
-    && make install \
+    && git clone --depth=1 https://github.com/tsl0922/ttyd.git /ttyd \
+    && cd /ttyd && ./scripts/cross-build.sh x86_64 \
     && apt-get remove -y --purge \
         cmake \
         g++ \
@@ -42,8 +40,8 @@ RUN apt-get update \
     && rm -rf /tmp/ttyd
 
 ENV TINI_VERSION v0.18.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-RUN chmod +x /tini
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /sbin/tini
+RUN chmod +x /sbin/tini
 
 EXPOSE 7681
 
