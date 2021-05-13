@@ -39,15 +39,15 @@ RUN apt-get update \
     && rm -f lsd-musl_amd64.deb \
     && curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | PYENV_ROOT=/root/.pyenv bash \
     && echo 'export PYENV_ROOT="/root/.pyenv"' >> /root/.profile \
-    && echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.profile \
-    && echo 'eval "$(pyenv init --path)"' >> ~/.profile \
-    && echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.bashrc \
-    && echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.zshrc \
-    && /bin/sh -c "$(curl -FsSL https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh)" \
+    && echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> /root/.profile \
+    && echo 'eval "$(pyenv init --path)"' >> /root/.profile \
+    && echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> /root/.bashrc \
+    && echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> /root/.zshrc \
+    && curl -sSL https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh | bash \
     && /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended \
-    && git clone git://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:/root/.oh-my-zsh/custom}/plugins/zsh-autosuggestions \
-    && git clone git://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:/root/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting \
-    && sh -c "$(sh -c "$(curl -fsSL https://starship.rs/install.sh)")" "" -y \
+    && git clone git://github.com/zsh-users/zsh-autosuggestions /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions \
+    && git clone git://github.com/zsh-users/zsh-syntax-highlighting.git /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting \
+    && sh -c "$(curl -fsSL https://starship.rs/install.sh)" "" -y \
     && sed -i 's/# DISABLE_UPDATE_PROMPT="true"/DISABLE_UPDATE_PROMPT="true"/g' /root/.zshrc \
     && sed -i 's/plugins=(git)/plugins=(colored-man-pages copydir copyfile cp extract git history screen systemd tmux wd zsh-autosuggestions zsh-syntax-highlighting zsh_reload)/g' /root/.zshrc \
     && echo 'EDITOR=nano' >> /root/.zshrc \
