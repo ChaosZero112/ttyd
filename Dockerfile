@@ -54,7 +54,7 @@ RUN apt-get update \
     #&& rm -f Noto-unhinted.zip \
     #&& mkdir -p /usr/share/fonts/opentype/noto \
     #&& mv *otf *otc /usr/share/fonts/opentype/noto \
-    #&& printf "#!/bin/sh
+    && printf "#!/bin/sh
     clear
     echo 'Installing python build tools. Please wait...' && \
     apt-get update && \
