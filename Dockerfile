@@ -7,11 +7,13 @@ RUN git clone --depth=1 https://github.com/tsl0922/ttyd.git /ttyd \
 
 FROM ubuntu:20.04
 COPY --from=0 /ttyd/build/ttyd /usr/bin/ttyd
+COPY /optional/py-build-tools.sh /root/py-build-tools.sh
 
 ENV LSD 0.20.1
 
 
 RUN apt-get update \
+    && apt-get -y -qq -o "Dpkg::Options::=--force-confdef" dist-upgrade \
     && apt-get install -y --no-install-recommends \
       ca-certificates \
       curl \
@@ -54,16 +56,6 @@ RUN apt-get update \
     #&& rm -f Noto-unhinted.zip \
     #&& mkdir -p /usr/share/fonts/opentype/noto \
     #&& mv *otf *otc /usr/share/fonts/opentype/noto \
-    && printf "#!/bin/sh
-    clear
-    echo 'Installing python build tools. Please wait...' && \
-    apt-get update && \
-    apt-get install make build-essential libssl-dev zlib1g-dev libbz2-dev \
-    libreadline-dev libsqlite3-dev llvm libncursesw5-dev xz-utils tk-dev \
-    libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev && \
-    echo '' && \
-    echo 'Done.' && \
-    rm -f /root/py-build-tools.sh" > /root/py-build-tools.sh \
     && apt-get autoremove --purge -y \
     && rm -rf /var/lib/apt/lists/*
 
