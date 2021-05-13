@@ -1,59 +1,77 @@
-FROM phusion/baseimage:0.11
+FROM tsl0922/musl-cross
 LABEL maintainer "Shuanglei Tao - tsl0922@gmail.com"
+
+RUN git clone --depth=1 https://github.com/tsl0922/ttyd.git /ttyd \
+    && cd /ttyd \
+    && ./scripts/cross-build.sh x86_64
+
+FROM ubuntu:20.04
+COPY --from=0 /ttyd/build/ttyd /usr/bin/ttyd
+
+ENV LSD 0.20.1
+
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
       ca-certificates \
-      cmake \
       curl \
-      g++ \
+      dnsutils \
       git \
-      libjson-c3 \
-      libjson-c-dev \
-      libssl1.0.0 \
-      libssl-dev \
-      libwebsockets8 \
-      libwebsockets-dev \
-      pkg-config \
-      vim-common \
+      iftop \
       iputils-ping \
-      tcptraceroute \
       inetutils-telnet \
+      lolcat \
+      mosh \
+      net-tools \
+      screen \
+      software-properties-common \
+      tar \
+      tcptraceroute \
+      tmux \
+      unzip \
+      vim-common \
       zsh \
-      iptables \
-      wget \
-    && git clone --depth=1 https://github.com/tsl0922/ttyd.git /tmp/ttyd \
-    && cd /tmp/ttyd && mkdir build && cd build \
-    && cmake -DCMAKE_BUILD_TYPE=RELEASE .. \
-    && make \
-    && make install \
-    && apt-get remove -y --purge \
-        cmake \
-        g++ \
-        libwebsockets-dev \
-        libjson-c-dev \
-        libssl-dev \
-        pkg-config \
-    && apt-get purge -y \
-    && apt-get autoremove -y \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /tmp/ttyd \
-    && mkdir -p /etc/my_init.d \
-    && touch /etc/my_init.d/iptables.sh \
-    && chmod +x /etc/my_init.d/iptables.sh \
-    && echo "#!/bin/sh" >> /etc/my_init.d/iptables.sh \
-    && echo "iptables -I INPUT -s 127.0.0.1 -j ACCEPT" >> /etc/my_init.d/iptables.sh \
-    && echo "iptables -I INPUT -s 155.64.138.0/21 -j ACCEPT" >> /etc/my_init.d/iptables.sh \
-    && echo "iptables -I INPUT -s 155.64.32.0/21 -j ACCEPT" >> /etc/my_init.d/iptables.sh \
-    && echo "iptables -I INPUT -s 174.117.48.21 -j ACCEPT" >> /etc/my_init.d/iptables.sh \
-    && echo "iptables -I INPUT -s 23.95.225.160 -j ACCEPT" >> /etc/my_init.d/iptables.sh \
-    && echo "iptables -I INPUT -s 10.0.0.0/24 -j ACCEPT" >> /etc/my_init.d/iptables.sh \
-    && echo "iptables -P INPUT DROP" >> /etc/my_init.d/iptables.sh \
-    && echo "exit 0" >> /etc/my_init.d/iptables.sh \
-    && wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true 
+    && curl -sSL https://github.com/Peltoche/lsd/releases/download/${LSD}/lsd_${LSD}_amd64.deb -o lsd-musl_amd64.deb \
+    && dpkg -i lsd-musl_amd64.deb \
+    && rm -f lsd-musl_amd64.deb \
+    && curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | PYENV_ROOT=/root/.pyenv bash \
+    && echo 'export PYENV_ROOT="/root/.pyenv"' >> /root/.profile \
+    && echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.profile \
+    && echo 'eval "$(pyenv init --path)"' >> ~/.profile \
+    && echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.bashrc \
+    && echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.zshrc \
+    && /bin/sh -c "$(curl -FsSL https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh)" \
+    && /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended \
+    && git clone git://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:/root/.oh-my-zsh/custom}/plugins/zsh-autosuggestions \
+    && git clone git://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:/root/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting \
+    && sh -c "$(sh -c "$(curl -fsSL https://starship.rs/install.sh)")" "" -y \
+    && sed -i 's/# DISABLE_UPDATE_PROMPT="true"/DISABLE_UPDATE_PROMPT="true"/g' /root/.zshrc \
+    && sed -i 's/plugins=(git)/plugins=(colored-man-pages copydir copyfile cp extract git history screen systemd tmux wd zsh-autosuggestions zsh-syntax-highlighting zsh_reload)/g' /root/.zshrc \
+    && echo 'EDITOR=nano' >> /root/.zshrc \
+    && echo 'eval "$(starship init zsh)"' >> /root/.zshrc \
+    #&& curl -sSL https://noto-website-2.storage.googleapis.com/pkgs/Noto-unhinted.zip -o Noto-unhinted.zip \
+    #&& unzip Noto-unhinted.zip \
+    #&& rm -f Noto-unhinted.zip \
+    #&& mkdir -p /usr/share/fonts/opentype/noto \
+    #&& mv *otf *otc /usr/share/fonts/opentype/noto \
+    #&& printf "#!/bin/sh
+    clear
+    echo 'Installing python build tools. Please wait...' && \
+    apt-get update && \
+    apt-get install make build-essential libssl-dev zlib1g-dev libbz2-dev \
+    libreadline-dev libsqlite3-dev llvm libncursesw5-dev xz-utils tk-dev \
+    libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev && \
+    echo '' && \
+    echo 'Done.' && \
+    rm -f /root/py-build-tools.sh" > /root/py-build-tools.sh \
+    && apt-get autoremove --purge -y \
+    && rm -rf /var/lib/apt/lists/*
+
+ADD https://github.com/krallin/tini/releases/download/v0.19.0/tini /sbin/tini
+RUN chmod +x /sbin/tini
 
 EXPOSE 7681
 
-ENTRYPOINT ["ttyd"]
+ENTRYPOINT ["/sbin/tini", "--"]
 
-CMD ["bash"]
+CMD ["ttyd","zsh"]
