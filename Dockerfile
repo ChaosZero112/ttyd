@@ -33,6 +33,7 @@ RUN apt-get update \
       tmux \
       unzip \
       vim-common \
+      wget \
       zsh \
     && curl -sSL https://github.com/Peltoche/lsd/releases/download/${LSD}/lsd_${LSD}_amd64.deb -o lsd-musl_amd64.deb \
     && dpkg -i lsd-musl_amd64.deb \
