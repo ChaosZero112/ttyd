@@ -7,14 +7,15 @@ RUN git clone --depth=1 https://github.com/tsl0922/ttyd.git /ttyd \
 
 FROM ubuntu:20.04
 COPY --from=0 /ttyd/build/ttyd /usr/bin/ttyd
-COPY /optional/py-build-tools.sh /root/py-build-tools.sh
+COPY optional/py-build-tools.sh /root/py-build-tools.sh
 
-ENV LSD 0.20.1
+ARG LSD=0.20.1
+ARG TINI=0.19.0
 
 
 RUN apt-get update \
-    && apt-get -y -qq -o "Dpkg::Options::=--force-confdef" dist-upgrade \
-    && apt-get install -y --no-install-recommends \
+    && DEBIAN_FRONTEND=noninteractive apt-get -y -qq -o "Dpkg::Options::=--force-confdef" dist-upgrade \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
       ca-certificates \
       curl \
       dnsutils \
@@ -59,7 +60,7 @@ RUN apt-get update \
     && apt-get autoremove --purge -y \
     && rm -rf /var/lib/apt/lists/*
 
-ADD https://github.com/krallin/tini/releases/download/v0.19.0/tini /sbin/tini
+ADD https://github.com/krallin/tini/releases/download/v${TINI}/tini /sbin/tini
 RUN chmod +x /sbin/tini
 
 EXPOSE 7681
