@@ -45,7 +45,7 @@ RUN apt-get update \
     && echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> /root/.bashrc \
     && echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> /root/.zshrc \
     && curl -sSL https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh | bash \
-    && /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended \
+    && curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | RUNZSH=no sh \
     && git clone git://github.com/zsh-users/zsh-autosuggestions /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions \
     && git clone git://github.com/zsh-users/zsh-syntax-highlighting.git /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting \
     && sh -c "$(curl -fsSL https://starship.rs/install.sh)" "" -y \
@@ -68,4 +68,4 @@ EXPOSE 7681
 
 ENTRYPOINT ["/sbin/tini", "--"]
 
-CMD ["ttyd","zsh"]
+CMD ["ttyd","--client-option rendererType=webgl --uid 1000 --gid 1000 --once /usr/bin/zsh"]
